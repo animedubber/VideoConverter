@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Video - Video-Audio Merger{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h2 class="card-title h4 mb-0">Step 1: Upload Video</h2>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('upload_video') }}" method="post" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <div class="alert alert-info">
+                            <p class="mb-0">Select a video file to upload. After uploading, you'll be prompted to upload an audio file to merge with it.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="video" class="form-label">Select Video File</label>
+                        <div class="input-group custom-file-button">
+                            <input type="file" class="form-control" id="video" name="video" accept="video/*,.mp4,.avi,.mov,.mkv,.webm,.flv,.wmv" required>
+                            <label class="input-group-text" for="video">Browse</label>
+                        </div>
+                        <div class="max-file-size mt-1">Maximum file size: 2GB</div>
+                    </div>
+                    
+                    <div class="progress-container mb-3">
+                        <label class="form-label">Uploading...</label>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                        </div>
+                        <small class="text-muted">This may take a while for large files. Please don't close this window.</small>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Upload Video</button>
+                        <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">Supported Video Formats</div>
+            <div class="card-body">
+                <p class="mb-0">MP4, AVI, MOV, MKV, WEBM, FLV, WMV and other standard video formats.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

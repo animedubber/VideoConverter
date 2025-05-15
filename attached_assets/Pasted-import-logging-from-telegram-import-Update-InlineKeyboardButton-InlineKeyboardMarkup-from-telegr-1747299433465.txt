@@ -1,0 +1,139 @@
+import logging
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import (
+    ApplicationBuilder,
+    CommandHandler,
+    CallbackQueryHandler,
+    ContextTypes,
+)
+import motor.motor_asyncio
+
+# Enable logging
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
+)
+logger = logging.getLogger(__name__)
+
+BOT_TOKEN = "7681307753:AAHX0aBHWbfTQRobha6klUl6mNVFcnW2qYI"
+MONGO_URI = "mongodb+srv://raj:krishna@cluster0.eq8xrjs.mongodb.net/"
+
+START_GIF_URL = (
+    "https://media.giphy.com/media/4pk6ba2LUEMi4/giphy.gif"
+    "?cid=ecf05e47japbznlmj88js7bhzc2z6yjqjnbedc5dyw7mlz96&ep=v1_gifs_search&rid=giphy.gif&ct=g"
+)
+
+WELCOME_TEXT = """
+👋 Welcome to the Video & Audio Merger Bot!
+
+✶ You can customise /settings (Rename File, Upload Mode).
+
+Send me a Video, Audio, or Document to get started.
+
+Use /help to see all commands.
+"""
+
+SETTINGS_KEYBOARD = InlineKeyboardMarkup(
+    [
+        [InlineKeyboardButton("Rename File", callback_data="settings_rename")],
+        [InlineKeyboardButton("Upload Mode", callback_data="settings_upload_mode")],
+        [InlineKeyboardButton("Back to Main Menu", callback_data="back_main")],
+    ]
+)
+
+# Initialize MongoDB client and database
+mongo_client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URI)
+db = mongo_client['mydatabase']  # Change 'mydatabase' to your DB name
+users_collection = db.users
+
+# Get user settings or create default
+async def get_user_settings(user_id: int):
+    user = await users_collection.find_one({"user_id": user_id})
+    if not user:
+        default_settings = {
+            "user_id": user_id,
+            "rename_file": False,
+            "upload_mode": "default",
+        }
+        await users_collection.insert_one(default_settings)
+        return default_settings
+    return user
+
+# Update specific user setting
+async def update_user_settings(user_id: int, field: str, value):
+    await users_collection.update_one({"user_id": user_id}, {"$set": {field: value}})
+
+# /start handler
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    user_id = update.effective_user.id
+
+    # Ensure user has a settings document
+    await get_user_settings(user_id)
+
+    await context.bot.send_animation(chat_id=chat_id, animation=START_GIF_URL)
+    await context.bot.send_message(chat_id=chat_id, text=WELCOME_TEXT)
+
+# /settings handler
+async def settings(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    user_id = update.effective_user.id
+
+    user_settings = await get_user_settings(user_id)
+
+    text = (
+        f"⚙️ Settings Menu\n\n"
+        f"Rename File: {'Enabled' if user_settings.get('rename_file') else 'Disabled'}\n"
+        f"Upload Mode: {user_settings.get('upload_mode')}\n\n"
+        "Choose an option:"
+    )
+    await context.bot.send_message(chat_id=chat_id, text=text, reply_markup=SETTINGS_KEYBOARD)
+
+# CallbackQuery handler for settings menu
+async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    user_id = query.from_user.id
+    await query.answer()
+    data = query.data
+
+    if data == "settings_rename":
+        user_settings = await get_user_settings(user_id)
+        new_value = not user_settings.get("rename_file", False)
+        await update_user_settings(user_id, "rename_file", new_value)
+        await query.edit_message_text(
+            text=f"Rename File setting is now: {'Enabled' if new_value else 'Disabled'}",
+            reply_markup=SETTINGS_KEYBOARD,
+        )
+    elif data == "settings_upload_mode":
+        user_settings = await get_user_settings(user_id)
+        new_mode = "fast" if user_settings.get("upload_mode") == "default" else "default"
+        await update_user_settings(user_id, "upload_mode", new_mode)
+        await query.edit_message_text(
+            text=f"Upload Mode is now: {new_mode}",
+            reply_markup=SETTINGS_KEYBOARD,
+        )
+    elif data == "back_main":
+        await query.edit_message_text(text=WELCOME_TEXT, reply_markup=None)
+
+# /help handler
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    help_text = """
+Available commands:
+/start - Start the bot and see welcome animation
+/settings - Customize your preferences
+/help - Show this help message
+"""
+    await update.message.reply_text(help_text)
+
+def main():
+    app = ApplicationBuilder().token(BOT_TOKEN).build()
+
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("settings", settings))
+    app.add_handler(CommandHandler("help", help_command))
+    app.add_handler(CallbackQueryHandler(callback_handler))
+
+    print("Bot started...")
+    app.run_polling()
+
+if __name__ == "__main__":
+    main()

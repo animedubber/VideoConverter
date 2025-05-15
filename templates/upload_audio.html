@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Audio - Video-Audio Merger{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h2 class="card-title h4 mb-0">Step 2: Upload Audio</h2>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <p class="mb-0">Video uploaded successfully: <strong>{{ video_name }}</strong></p>
+                </div>
+                
+                <form action="{{ url_for('upload_audio', video_id=video_id) }}" method="post" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <div class="alert alert-info">
+                            <p class="mb-0">Now select an audio file to merge with your video.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="audio" class="form-label">Select Audio File</label>
+                        <div class="input-group custom-file-button">
+                            <input type="file" class="form-control" id="audio" name="audio" accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac" required>
+                            <label class="input-group-text" for="audio">Browse</label>
+                        </div>
+                        <div class="max-file-size mt-1">Maximum file size: 2GB</div>
+                    </div>
+                    
+                    <div class="progress-container mb-3">
+                        <label class="form-label">Uploading...</label>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                        </div>
+                        <small class="text-muted">This may take a while for large files. Please don't close this window.</small>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Upload Audio</button>
+                        <a href="{{ url_for('upload_video') }}" class="btn btn-secondary">Back to Video Upload</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">Supported Audio Formats</div>
+            <div class="card-body">
+                <p class="mb-0">MP3, WAV, OGG, M4A, AAC, FLAC and other standard audio formats.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

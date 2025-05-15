@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Video-Audio Merger - Upload Large Files{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h2 class="card-title h4 mb-0">Upload and Merge Video with Audio</h2>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <div class="card h-100">
+                            <div class="card-body text-center d-flex flex-column justify-content-between">
+                                <div>
+                                    <h5 class="card-title">Telegram Bot</h5>
+                                    <p class="card-text">Use our Telegram bot for files under 20MB</p>
+                                </div>
+                                <a href="https://t.me/your_bot_username" class="btn btn-outline-primary" target="_blank">
+                                    <i class="bi bi-telegram"></i> Open Telegram Bot
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100 border-primary">
+                            <div class="card-body text-center d-flex flex-column justify-content-between">
+                                <div>
+                                    <h5 class="card-title">Web Uploader</h5>
+                                    <p class="card-text">Upload files up to <strong>2GB</strong> using this web interface</p>
+                                </div>
+                                <a href="{{ url_for('upload_video') }}" class="btn btn-primary">
+                                    <i class="bi bi-cloud-upload"></i> Start Uploading
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <h4>How It Works</h4>
+                    <ol class="list-group list-group-numbered">
+                        <li class="list-group-item">Upload your video file (up to 2GB)</li>
+                        <li class="list-group-item">Upload your audio file to merge with the video</li>
+                        <li class="list-group-item">Customize the output filename (optional)</li>
+                        <li class="list-group-item">Download your merged video file</li>
+                    </ol>
+                </div>
+
+                <div class="alert alert-info mt-4">
+                    <h5>Supported File Formats</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Video Formats</h6>
+                            <p>MP4, AVI, MOV, MKV, WEBM, FLV, WMV</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Audio Formats</h6>
+                            <p>MP3, WAV, OGG, M4A, AAC, FLAC</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

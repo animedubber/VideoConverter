@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Merge Files - Video-Audio Merger{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h2 class="card-title h4 mb-0">Step 3: Merge Files</h2>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <div class="alert alert-success">
+                        <p class="mb-1"><strong>Video:</strong> {{ video_name }}</p>
+                        <p class="mb-0"><strong>Audio:</strong> {{ audio_name }}</p>
+                    </div>
+                </div>
+                
+                <form action="{{ url_for('merge_files', session_id=session_id) }}" method="post">
+                    <div class="mb-3">
+                        <label for="custom_filename" class="form-label">Custom Filename (optional)</label>
+                        <input type="text" class="form-control" id="custom_filename" name="custom_filename" placeholder="Enter a custom filename">
+                        <div class="form-text">Leave blank to use the original video filename with "_with_audio" suffix.</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="fast_mode" name="fast_mode">
+                            <label class="form-check-label" for="fast_mode">Fast Mode</label>
+                        </div>
+                        <div class="form-text">Fast mode copies audio without reencoding, which is faster but may not be compatible with all players.</div>
+                    </div>
+                    
+                    <div class="progress-container mb-3">
+                        <label class="form-label">Merging files...</label>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                        </div>
+                        <small class="text-muted">This may take several minutes for large files. Please don't close this window.</small>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Merge Files</button>
+                        <a href="{{ url_for('upload_audio', video_id=session_id) }}" class="btn btn-secondary">Back to Audio Upload</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

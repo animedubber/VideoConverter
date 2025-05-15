@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Download Result - Video-Audio Merger{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h2 class="card-title h4 mb-0">Success! Your Files Have Been Merged</h2>
+            </div>
+            <div class="card-body text-center">
+                <div class="mb-4">
+                    <div class="alert alert-success">
+                        <h4 class="alert-heading mb-3">Processing Complete!</h4>
+                        <p>Your video and audio files have been successfully merged.</p>
+                        <p class="mb-0">Filename: <strong>{{ filename }}</strong></p>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <p>Click the button below to download your merged file:</p>
+                    <a href="{{ url_for('get_file', filename=filename) }}" class="btn btn-lg btn-primary mb-3">
+                        <i class="bi bi-download"></i> Download Merged File
+                    </a>
+                    <p class="text-muted small">Your file will be available for download for a limited time.</p>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('upload_video') }}" class="btn btn-outline-primary">Merge Another File</a>
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary">Return to Home</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">Need Help?</div>
+            <div class="card-body">
+                <p>If you encounter any issues with the merged file, you can try again with different settings:</p>
+                <ul>
+                    <li>Try a different audio format</li>
+                    <li>Toggle the "Fast Mode" setting</li>
+                    <li>For files under 20MB, try using our Telegram bot</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
